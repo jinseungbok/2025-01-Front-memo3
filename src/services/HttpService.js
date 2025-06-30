@@ -6,8 +6,10 @@ class HttpService {
     console.log("HttpService 객체 생성");
   }
 
-  async postMemo(item) {
-    console.log("postMemo - item: ", item);
+  async save(item) {
+    console.log("save - item: ", item);
+    const res = await axios.post("/memo", item);
+    return res.data;
   }
 
   // get method 호출시, 2번째 인자는 객체를 보내고
@@ -23,17 +25,22 @@ class HttpService {
   // const res = axios.get("", { params });
   // 변수명과 키 값이 같으면 가능
 
-  async getMemo(id) {
-    console.log("getMemo - id: ", id);
+  async findById(id) {
+    console.log("findById - id: ", id);
+    const res = await axios.get(`/memo/${id}`);
+    console.log("findById - res.data: ", res.data);
+    return res.data;
   }
 
-  async putMemo(item) {
-    console.log("putMemo - item: ", item);
-  }
+  async modify(item) {
+    console.log("modify - item: ", item);
+    const res = await axios.put("/memo", item);
+    return res.data;
+  } // post, put은 형식이 거의 동일하다. 종류는 다름
 
   async deleteMemo(params) {
     console.log("deleteMemo - params: ", params);
-    const res = await axios.delete('/memo', { params });
+    const res = await axios.delete("/memo", { params });
     return res.data;
   }
 }

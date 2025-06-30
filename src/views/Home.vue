@@ -16,16 +16,36 @@ const getItems = async (param) => {
   state.memos = data.resultData;
   console.log("state.memos :", state.memos);
 };
+
+const removeItem = async (id) => {
+  const deleteIdx = state.memos.findIndex((item, idx) => item.id === id);
+  console.log("removeItem: ", id, deleteIdx);
+
+  if (confirm("삭제하시겠습니까?")) {
+    console.log("삭제되었습니다.");
+    const params = { memo_id: id };
+    const data = await httpService.deleteMemo(params);
+    if (data.resultData === 1) {
+      // getItems({});
+      const deleteIdx = state.memos.findIndex((item, idx) => item.id === id);
+      if (deleteIdx >= 0) {
+        state.memos.splice(deleteIdx, 1);
+      }
+    }
+  }
+};
 </script>
 
 <template>
   <div class="memo-list">
-    <MemoCard v-for="m in state.memos" :item="m" :key="m.id" />
+    <router-link to="/add" class="add btn btn-light"> + 추가하기 </router-link>
+    <MemoCard
+      @delete-item="removeItem"
+      v-for="m in state.memos"
+      :item="m"
+      :key="m.id"
+    />
     <!-- v-for 사용시 :key="" 값 반드시 들어가야 함 -->
-
-    <router-link to="/memos/add" class="add btn btn-light">
-      + 추가하기
-    </router-link>
   </div>
 </template>
 
