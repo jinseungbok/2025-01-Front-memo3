@@ -45,22 +45,28 @@ const submit = async () => {
   }
   // 등록, 수정 처리 구분 필요함
   console.log("submit 함수 호출");
+  let data = null;
+  const bodyJson = {
+    title: state.memo.title,
+    ctnts: state.memo.ctnts,
+  };
   if (route.params.memoId) {
     // 수정 처리
-    return;
+    bodyJson.memoId = state.memo.memoId;
+    data = await httpService.modify(bodyJson);
+  } else {
+    // 등록 처리
+    data = await httpService.save(bodyJson);
   }
-  const bodyJson = { title: state.memo.title, ctnts: state.memo.ctnts };
-  const data = await httpService.save(bodyJson);
-  // 필요한 데이터만 보내기 때문에 state.memo가 아닌 bodyJson과 같이 형식을 변환해서 전송
+
   if (data.resultData === 1) {
-    // 등록 성공
+    // 등록/수정 성공
     // 홈 화면으로 라우터 처리
     router.push({ path: "/" });
   } else {
     // 등록 실패
     alert(data.resultMessage);
   }
-  // 등록 처리
 };
 
 onMounted(() => {
@@ -73,7 +79,6 @@ const findById = async () => {
   const data = await httpService.findById(route.params.memoId);
   state.memo = data.resultData;
 };
-
 </script>
 
 <template>
